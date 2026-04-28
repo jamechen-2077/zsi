@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZSI 舰船售卖中心 / ZWH SPACE INDUSTRIAL</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: #03060a;
+      color: #e8f7ff;
+      font-family: Inter, "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.95), rgba(0,0,0,.45), transparent 88%);
+    }
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      box-shadow: inset 0 0 180px rgba(0,0,0,.78), inset 0 -150px 160px rgba(0,0,0,.7);
+    }
+    .star {
+      position: fixed;
+      z-index: 0;
+      border-radius: 999px;
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 0 12px rgba(125,211,252,.8);
+      animation: twinkle 3s infinite alternate ease-in-out;
+    }
+    @keyframes twinkle {
+      from { opacity: .18; transform: scale(.7); }
+      to { opacity: .9; transform: scale(1.2); }
+    }
+
+    .page {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 22% 18%, rgba(27,118,181,.34), transparent 26%),
+        radial-gradient(circle at 78% 10%, rgba(102,126,234,.22), transparent 22%),
+        linear-gradient(180deg, #02060d 0%, #07111d 48%, #02060d 100%);
+      position: relative;
+      isolation: isolate;
+    }
+    .wrap {
+      width: min(1240px, calc(100% - 40px));
+      margin: 0 auto;
+      position: relative;
+      z-index: 5;
+    }
+
+    .topStrip {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      height: 34px;
+      background: rgba(3, 10, 18, .9);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(116,189,231,.18);
+      color: #7eacc9;
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .topStrip .wrap {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .statusDot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background: #68e8ff;
+      box-shadow: 0 0 14px #68e8ff;
+    }
+
+    .mainNav {
+      position: sticky;
+      top: 34px;
+      z-index: 19;
+      background: linear-gradient(180deg, rgba(4,17,30,.94), rgba(4,17,30,.72));
+      backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(116,189,231,.18);
+    }
+    .navInner {
+      height: 82px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 30px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      min-width: 290px;
+    }
+    .logoMark {
+      width: 54px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      filter: drop-shadow(0 0 18px rgba(125,211,252,.38));
+    }
+    .logoMark svg { width: 54px; height: 64px; }
+    .logoMark path, .logoMark circle {
+      fill: none;
+      stroke: #f5fbff;
+      stroke-width: 7;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+    .brandName {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      color: #fff;
+      line-height: 1;
+    }
+    .brandSub {
+      margin-top: 6px;
+      font-size: 11px;
+      letter-spacing: .30em;
+      color: #73bde7;
+    }
+    .primaryNav {
+      display: flex;
+      justify-content: center;
+      gap: 2px;
+    }
+    .primaryNav a {
+      position: relative;
+      color: #d7e7f1;
+      padding: 30px 18px 29px;
+      font-size: 14px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+    .primaryNav a::after {
+      content: "";
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
+      height: 2px;
+      background: #68e8ff;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: .24s ease;
+      box-shadow: 0 0 16px rgba(104,232,255,.7);
+    }
+    .primaryNav a:hover,
+    .primaryNav a.active {
+      color: #fff;
+      background: rgba(104,232,255,.06);
+    }
+    .primaryNav a:hover::after,
+    .primaryNav a.active::after { transform: scaleX(1); }
+    .navActions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .loginBtn, .pledgeBtn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 17px;
+      border: 1px solid rgba(104,232,255,.34);
+      background: rgba(4,20,33,.66);
+      color: #bdf4ff;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    }
+    .pledgeBtn {
+      background: linear-gradient(90deg, #0ea5e9, #67e8f9);
+      color: #03121c;
+      border-color: transparent;
+      box-shadow: 0 0 30px rgba(14,165,233,.26);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(116,189,231,.18);
+      background:
+        linear-gradient(90deg, rgba(2,6,12,.94), rgba(2,6,12,.58), rgba(2,6,12,.88)),
+        radial-gradient(circle at 72% 42%, rgba(104,232,255,.18), transparent 24%),
+        linear-gradient(135deg, #08111d, #031827 55%, #02060d);
+    }
+    .heroGrid {
+      min-height: 520px;
+      display: grid;
+      grid-template-columns: .92fr 1.08fr;
+      gap: 42px;
+      align-items: center;
+      padding: 72px 0 82px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      color: #8defff;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 38px;
+      height: 1px;
+      background: #68e8ff;
+      box-shadow: 0 0 12px #68e8ff;
+    }
+    h1 {
+      margin: 24px 0 0;
+      color: #fff;
+      font-size: clamp(52px, 7.4vw, 104px);
+      line-height: .86;
+      letter-spacing: -.07em;
+      text-transform: uppercase;
+      text-shadow: 0 0 45px rgba(0,0,0,.58);
+    }
+    h1 span {
+      display: block;
+      margin-top: 18px;
+      font-size: clamp(30px, 4vw, 54px);
+      letter-spacing: -.03em;
+      color: #dff8ff;
+    }
+    .heroLead {
+      max-width: 680px;
+      margin: 28px 0 0;
+      color: #b7d2e1;
+      font-size: 18px;
+      line-height: 1.9;
+    }
+    .heroPanel {
+      min-height: 380px;
+      border: 1px solid rgba(116,189,231,.22);
+      background:
+        radial-gradient(circle at 50% 38%, rgba(104,232,255,.18), transparent 31%),
+        rgba(3,13,23,.78);
+      clip-path: polygon(24px 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%, 0 24px);
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+    .heroPanel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .22;
+      background-image:
+        linear-gradient(rgba(104,232,255,.22) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(104,232,255,.22) 1px, transparent 1px);
+      background-size: 42px 42px;
+    }
+    .heroShip {
+      position: relative;
+      width: min(520px, 90%);
+      height: 190px;
+      filter: drop-shadow(0 32px 76px rgba(0,0,0,.68));
+    }
+    .heroShip .body {
+      position: absolute;
+      left: 5%;
+      top: 42%;
+      width: 90%;
+      height: 48px;
+      background: linear-gradient(90deg, #0f172a, #dbeafe 18%, #64748b 55%, #111827 92%);
+      clip-path: polygon(0 50%, 12% 0, 80% 0, 100% 50%, 80% 100%, 12% 100%);
+    }
+    .heroShip .wingTop {
+      position: absolute;
+      left: 26%;
+      top: 12%;
+      width: 44%;
+      height: 86px;
+      background: linear-gradient(135deg, rgba(226,232,240,.9), rgba(30,41,59,.75));
+      clip-path: polygon(0 100%, 50% 0, 100% 100%);
+    }
+    .heroShip .wingBottom {
+      position: absolute;
+      left: 26%;
+      bottom: 12%;
+      width: 44%;
+      height: 86px;
+      background: linear-gradient(45deg, rgba(226,232,240,.85), rgba(30,41,59,.72));
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+    .heroShip .engine {
+      position: absolute;
+      right: 3%;
+      top: 34%;
+      width: 82px;
+      height: 70px;
+      border-radius: 12px;
+      background: #06111c;
+      border: 1px solid rgba(104,232,255,.25);
+      box-shadow: inset -18px 0 28px rgba(104,232,255,.18);
+    }
+
+    .toolbar {
+      margin: 34px auto 0;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 14px;
+      align-items: center;
+      padding: 18px;
+      border: 1px solid rgba(116,189,231,.18);
+      background: rgba(3,13,23,.82);
+      clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+    }
+    .searchInput, .selectInput {
+      width: 100%;
+      height: 48px;
+      border: 1px solid rgba(104,232,255,.28);
+      background: rgba(2, 12, 22, .86);
+      color: #e8f7ff;
+      outline: none;
+      padding: 0 14px;
+      font-weight: 700;
+      clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+    }
+    .selectInput { min-width: 170px; }
+
+    .statsRow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .stat {
+      border: 1px solid rgba(116,189,231,.16);
+      background: rgba(4,17,30,.72);
+      padding: 16px;
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+    }
+    .stat b {
+      display: block;
+      color: #fff;
+      font-size: 28px;
+      line-height: 1;
+    }
+    .stat span {
+      display: block;
+      margin-top: 8px;
+      color: #7eacc9;
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      padding: 34px 0 90px;
+    }
+    .card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(116,189,231,.18);
+      background: linear-gradient(180deg, rgba(10,35,55,.86), rgba(3,10,18,.95));
+      clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+      transition: transform .22s ease, border-color .22s ease;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(104,232,255,.58);
+    }
+    .cardImage {
+      position: relative;
+      height: 230px;
+      background: #020811;
+      overflow: hidden;
+    }
+    .cardImage img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: .9;
+      transition: transform .34s ease, opacity .34s ease;
+    }
+    .card:hover .cardImage img {
+      transform: scale(1.04);
+      opacity: 1;
+    }
+    .cardImage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(2,6,12,.86));
+    }
+    .badge {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      z-index: 2;
+      padding: 8px 10px;
+      border: 1px solid rgba(104,232,255,.32);
+      color: #bdf4ff;
+      background: rgba(2,10,18,.78);
+      font-size: 11px;
+      letter-spacing: .12em;
+      font-weight: 900;
+    }
+    .cardBody {
+      padding: 22px;
+    }
+    .cardBody h3 {
+      margin: 0;
+      color: #fff;
+      font-size: 25px;
+      letter-spacing: -.02em;
+    }
+    .type {
+      margin-top: 8px;
+      color: #7eacc9;
+      font-size: 13px;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+    .price {
+      margin-top: 18px;
+      color: #68e8ff;
+      font-size: 24px;
+      font-weight: 950;
+    }
+    .specs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .spec {
+      border: 1px solid rgba(116,189,231,.14);
+      background: rgba(255,255,255,.035);
+      padding: 10px;
+    }
+    .spec span {
+      display: block;
+      color: #779db5;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .spec strong {
+      display: block;
+      margin-top: 5px;
+      color: #fff;
+      font-size: 14px;
+    }
+    .desc {
+      margin-top: 16px;
+      color: #9fbdd0;
+      line-height: 1.65;
+      font-size: 14px;
+      min-height: 45px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+    .cardActions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .detailBtn, .buyBtn {
+      flex: 1;
+      min-height: 42px;
+      border: 1px solid rgba(104,232,255,.32);
+      background: rgba(104,232,255,.08);
+      color: #bdf4ff;
+      cursor: pointer;
+      font-weight: 900;
+      letter-spacing: .10em;
+      clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+    }
+    .buyBtn {
+      background: linear-gradient(90deg, #d8f8ff, #67e8f9);
+      color: #06131c;
+      border-color: transparent;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: rgba(1, 5, 10, .78);
+      backdrop-filter: blur(18px);
+    }
+    .modal.open { display: flex; }
+    .modalPanel {
+      width: min(1100px, 100%);
+      max-height: min(860px, calc(100vh - 56px));
+      overflow: auto;
+      border: 1px solid rgba(104,232,255,.30);
+      background: rgba(3,13,23,.96);
+      box-shadow: 0 32px 96px rgba(0,0,0,.55);
+      clip-path: polygon(24px 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%, 0 24px);
+    }
+    .modalHeader {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 24px;
+      border-bottom: 1px solid rgba(116,189,231,.16);
+      position: sticky;
+      top: 0;
+      background: rgba(3,13,23,.96);
+      z-index: 2;
+    }
+    .modalHeader h2 {
+      margin: 0;
+      font-size: 30px;
+      color: #fff;
+    }
+    .closeBtn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(104,232,255,.32);
+      background: rgba(104,232,255,.08);
+      color: #bdf4ff;
+      cursor: pointer;
+      font-weight: 900;
+    }
+    .modalContent {
+      display: grid;
+      grid-template-columns: 1fr .92fr;
+      gap: 22px;
+      padding: 24px;
+    }
+    .gallery {
+      display: grid;
+      gap: 12px;
+    }
+    .gallery img {
+      width: 100%;
+      max-height: 430px;
+      object-fit: cover;
+      border: 1px solid rgba(116,189,231,.18);
+      background: #020811;
+    }
+    .detailTable {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .detailItem {
+      border: 1px solid rgba(116,189,231,.16);
+      background: rgba(255,255,255,.035);
+      padding: 13px;
+    }
+    .detailItem span {
+      display: block;
+      color: #779db5;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .detailItem strong {
+      display: block;
+      margin-top: 6px;
+      color: #fff;
+      line-height: 1.45;
+    }
+    .equipment {
+      grid-column: 1 / -1;
+    }
+    .modalDesc {
+      margin-top: 18px;
+      color: #b7d2e1;
+      line-height: 1.78;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      padding: 48px;
+      text-align: center;
+      border: 1px solid rgba(116,189,231,.18);
+      background: rgba(3,13,23,.78);
+      color: #9fbdd0;
+    }
+
+    footer {
+      position: relative;
+      z-index: 5;
+      border-top: 1px solid rgba(116,189,231,.18);
+      background: rgba(2,6,12,.92);
+      color: #709bb5;
+    }
+    .footerInner {
+      min-height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 1060px) {
+      .primaryNav { display: none; }
+      .navInner { grid-template-columns: auto auto; justify-content: space-between; }
+      .heroGrid, .modalContent { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 720px) {
+      .wrap { width: min(100% - 28px, 1240px); }
+      .topStrip { display: none; }
+      .mainNav { top: 0; }
+      .brand { min-width: auto; }
+      .brandName { font-size: 16px; }
+      .brandSub { font-size: 9px; }
+      .pledgeBtn { display: none; }
+      .heroGrid { min-height: auto; padding: 52px 0 60px; }
+      h1 { font-size: 52px; }
+      h1 span { font-size: 30px; }
+      .toolbar { grid-template-columns: 1fr; }
+      .statsRow, .grid, .specs, .detailTable { grid-template-columns: 1fr; }
+      .cardImage { height: 210px; }
+      .modal { padding: 14px; }
+      .modalContent { padding: 16px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="noise"></div>
+    <div class="vignette"></div>
+    <div id="stars"></div>
+
+    <div class="topStrip">
+      <div class="wrap">
+        <span><span class="statusDot"></span>ZSI SHIP SALES CENTER ONLINE</span>
+        <span>舰船档案 · 价格目录 · 资产申请 · GitHub Pages Ready</span>
+      </div>
+    </div>
+
+    <header class="mainNav">
+      <div class="wrap navInner">
+        <a class="brand" href="index.html">
+          <div class="logoMark" aria-label="ZSI logo">
+            <svg viewBox="0 0 100 120" role="img">
+              <path d="M50 4 L92 58 L50 116 L8 58 Z"></path>
+              <path d="M50 4 L50 116"></path>
+              <path d="M50 46 L50 4"></path>
+              <circle cx="50" cy="68" r="25"></circle>
+              <path d="M9 30 H34 L8 58 L34 90 H9 Z"></path>
+              <path d="M91 30 H66 L92 58 L66 90 H91 Z"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="brandName">ZWH SPACE INDUSTRIAL</div>
+            <div class="brandSub">ZSI SHIP SALES CENTER</div>
+          </div>
+        </a>
+
+        <nav class="primaryNav">
+          <a href="index.html#history">企业历史</a>
+          <a href="index.html#industry">扩张部</a>
+          <a href="index.html#sales">销售部</a>
+          <a class="active" href="ships.html">舰船售卖</a>
+          <a href="index.html#news">企业公告</a>
+        </nav>
+
+        <div class="navActions">
+          <a class="loginBtn" href="login.html">登录</a>
+          <a class="pledgeBtn" href="index.html">返回首页</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="wrap heroGrid">
+          <div>
+            <div class="eyebrow">SHIP SALES CENTER / ASSET CATALOG</div>
+            <h1>
+              ZSI FLEET MARKET
+              <span>真实舰船售卖界面</span>
+            </h1>
+            <p class="heroLead">
+              已从《舰船档案》录入舰船参数与图片。你可以按厂商、舰种或关键词筛选，查看价格、尺寸、船员数量、电力、储存、速度和装备详情。
+            </p>
+          </div>
+          <div class="heroPanel" aria-hidden="true">
+            <div class="heroShip">
+              <div class="wingTop"></div>
+              <div class="wingBottom"></div>
+              <div class="body"></div>
+              <div class="engine"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="wrap">
+        <div class="toolbar">
+          <input id="searchInput" class="searchInput" type="search" placeholder="搜索舰船名称、舰种、装备，例如：战列舰 / ZSI / CIWS / 特兰多" />
+          <select id="manufacturerFilter" class="selectInput">
+            <option value="all">全部厂商</option>
+          </select>
+          <select id="typeFilter" class="selectInput">
+            <option value="all">全部舰种</option>
+          </select>
+        </div>
+
+        <div class="statsRow">
+          <div class="stat"><b id="statCount">0</b><span>Displayed Ships</span></div>
+          <div class="stat"><b id="statZsi">0</b><span>ZSI Assets</span></div>
+          <div class="stat"><b id="statCb">0</b><span>CB Assets</span></div>
+          <div class="stat"><b id="statMaxPrice">0</b><span>Highest Price</span></div>
+        </div>
+
+        <div class="grid" id="shipGrid"></div>
+      </section>
+    </main>
+
+    <div class="modal" id="shipModal" role="dialog" aria-modal="true" aria-label="舰船详情">
+      <div class="modalPanel">
+        <div class="modalHeader">
+          <div>
+            <span class="tiny" id="modalType"></span>
+            <h2 id="modalName"></h2>
+          </div>
+          <button class="closeBtn" id="closeModal">×</button>
+        </div>
+        <div class="modalContent">
+          <div class="gallery" id="modalGallery"></div>
+          <div>
+            <div class="detailTable" id="modalDetails"></div>
+            <p class="modalDesc" id="modalDescription"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="wrap footerInner">
+        <span>© 2954 ZWH SPACE INDUSTRIAL / ZSI</span>
+        <span>SHIP SALES CENTER · STATIC DEPLOYMENT</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const SHIPS = [
+  {
+    "name": "CB 大力神",
+    "type": "轻型航母",
+    "manufacturer": "CB",
+    "description": "大力神级是由CB创生动力公司设计的一款第二代轻型航母，他们最早发现民用航母的行业蓝海未经开发，便推出第一款民用轻型航母。14个微型无人机发射器足以针对战机和轻型护卫舰，其大货仓可为舰队提供充足补给，致力于提供空中优势。",
+    "price": "1107400",
+    "length": "61",
+    "width": "20",
+    "crew": "96",
+    "power": "7.5",
+    "storage": "超光素4920，钢板8360，电路板1600",
+    "forwardSpeed": "63.5",
+    "backSpeed": "26.2",
+    "equipment": "6x超大推进器，4x大型推进器，10x标准推进器，4x光束点防御，6x大型CIWS炮塔，20x微型无人机发射器，1x大型超空间驱动器",
+    "images": [
+      "assets/ships/ship-01-1.jpg",
+      "assets/ships/ship-01-2.jpg"
+    ],
+    "id": "ship-01"
+  },
+  {
+    "name": "CB奋进",
+    "type": "中型航母（战斗/支援航母）",
+    "manufacturer": "CB",
+    "description": "奋进是大力神级轻型航母的升级版，是CB创生动力设计的第二艘航空母舰，配备了火力更加强大的实弹/激光小型无人机，其作为中型战斗航母，还配备了多门双联甲板火炮，对突入舰群的小型战舰可进行有效杀伤。同时其较高机动性弥补了装甲劣势，缺点是造价过高，性价比较低。",
+    "price": "2550770",
+    "length": "83",
+    "width": "26",
+    "crew": "260",
+    "power": "25.5",
+    "storage": "超光素6160，炮弹14480，钢板12400，电路板2480",
+    "forwardSpeed": "85.2",
+    "backSpeed": "54.6",
+    "equipment": "24x大型推进器，2x大型运输推进器，1x全船工程坞，4x双联甲板炮，12x光束点防御，2x大型CIWS炮塔，14x小型无人机发射器",
+    "images": [
+      "assets/ships/ship-02-1.jpg",
+      "assets/ships/ship-02-2.jpg"
+    ],
+    "id": "ship-02"
+  },
+  {
+    "name": "CB 后处理",
+    "type": "驱逐舰（远程狙击舰）",
+    "manufacturer": "CB",
+    "description": "在虫族战争期间，为了为舰队提供更高的火力输出，CB Dynamic与ZSI共同进行项目H44的研发。后处理作为H44项目中的一艘早期狙击舰，在舰队服役150年后转入民用市场，几乎保留了其服役期间的配置，由于服役期间作为消耗型战舰，没有为其配备超空间引擎，但是却为其获得了亲民的价格，作为星系内赏金任务及护航的极具性价比选择。",
+    "price": "740200",
+    "length": "53",
+    "width": "30",
+    "crew": "132",
+    "power": "19.6",
+    "storage": "无（无法超光素跳跃）",
+    "forwardSpeed": "42.5",
+    "backSpeed": "11.5",
+    "equipment": "18x标准推进器，8x大型推进器，8x离子光束发射器，5x离子棱镜（普通），6x双联装点防御炮塔，6x小型护盾发生器，2x大型CIWS炮塔",
+    "images": [
+      "assets/ships/ship-03-1.jpg",
+      "assets/ships/ship-03-2.jpg"
+    ],
+    "id": "ship-03"
+  },
+  {
+    "name": "CB 家族",
+    "type": "巡洋舰（远程支援/轻装甲）",
+    "manufacturer": "CB",
+    "description": "在企业战争期间，由于前线的失利，CB下令需要一款能够快速满足前线消耗的巡洋舰，家族系列横空出世，其极具效率的造船模板，使得工时缩减至原来的三分之二。为了保证机动性，家族的装甲较同体型巡洋舰十分薄弱，口径超过381的高爆穿甲弹能够轻而易举的击穿其主装，无内层装甲结构的保护，又使得其导弹发射器具有极高的殉爆风险，因此需要远离战线使用其离子发射器远程狙杀敌舰。",
+    "price": "2857234",
+    "length": "100",
+    "width": "34",
+    "crew": "312",
+    "power": "39.0",
+    "storage": "超光素9000，炮弹13272，高爆导弹部件750，硫磺2504，铁2504",
+    "forwardSpeed": "76.7",
+    "backSpeed": "62.2",
+    "equipment": "2x大型运输推进器（5x5），24x大型推进器，6x标准推进器，2x超大推进器，6x高射炮炮塔，4x高爆导弹工厂，8x导弹发射器，2x大型CIWS炮塔，2x传感器阵列，1x全船工程坞，6x小型护盾发生器，2x大型护盾发生器，4x超级棱镜（lv2），6x离子光束发射器",
+    "images": [
+      "assets/ships/ship-04-1.jpg",
+      "assets/ships/ship-04-2.jpg"
+    ],
+    "id": "ship-04"
+  },
+  {
+    "name": "CB宗室",
+    "type": "巡洋舰（护卫/密接支援）",
+    "manufacturer": "CB",
+    "description": "在家族因其脆弱的装甲被ZSI英仙座大量击沉后，CB指示公司研发部对其改进，家族B3系列被CB选中，拥有更厚重的装甲，包括当时最先进的自动装弹机，12座双联甲板炮实现全部自动化，避免了开炮后对舰员的震撼控制。服役后作为舰队主力巡洋舰，为货船和地面部队提供火力支援",
+    "price": "2886189",
+    "length": "100",
+    "width": "34",
+    "crew": "294",
+    "power": "25.5",
+    "storage": "超光素6560，炮弹69912",
+    "forwardSpeed": "69.9",
+    "backSpeed": "47.6",
+    "equipment": "2x大型运输推进器（5x5），24x大型推进器，6x标准推进器，2x超大推进器，6x高射炮炮塔，1x全船工程坞，4x小型护盾发生器，12x双联甲板炮，2x大型CIWS炮塔",
+    "images": [
+      "assets/ships/ship-05-1.jpg",
+      "assets/ships/ship-05-2.jpg"
+    ],
+    "id": "ship-05"
+  },
+  {
+    "name": "CB上将级",
+    "type": "巡洋舰（火力投送平台/重装甲/低机动性）",
+    "manufacturer": "CB",
+    "description": "在CB Dynamic成立初期，研发部门充斥着旧贵族，虫族战争期间，信奉优势火力学说的研发部设计了上将级重巡洋舰，在设想中，上将级应以其重装甲和高火力投射成为舰队主力，但在实战中，极低的后退和回转性能成为沉没的主要原因，弹药储存的低可靠性也使不少上将级在未上战场前就发生了火灾事故。",
+    "price": "2648139",
+    "length": "106",
+    "width": "48",
+    "crew": "464",
+    "power": "18.4",
+    "storage": "超光素10680，炮弹100016",
+    "forwardSpeed": "81.3",
+    "backSpeed": "4.9（极慢）",
+    "equipment": "12x小型推进器，12x标准推进器，4xMRT喷口，12xMRT拓展器，4x引擎室，12x双联甲板炮，26x大型加农炮，6x高射炮阵列，6x大型CIWS炮塔，4x小型护盾发生器，1x传感器阵列",
+    "images": [
+      "assets/ships/ship-06-1.jpg",
+      "assets/ships/ship-06-2.jpg"
+    ],
+    "id": "ship-06"
+  },
+  {
+    "name": "CB 特兰多亲王",
+    "type": "战列舰",
+    "manufacturer": "CB",
+    "description": "以地球联合国第8任帝皇手下最有能力的亲王——特兰多亲王命名，为了纪念他为地球联合国作出的杰出贡献，CB Dynamic为其买下了军方最新的战列舰图纸并且进行了改造，完工后其卓越的性能超出了预料，被LXK和JMC进行联合研发。同时CB下令对其进行量产，如今进入民用市场，成为各大集团的首选主力舰，配备的舰首激光主炮几乎可以有效对抗任何战舰，配备的431mm主炮也能对主力舰进行有效杀伤",
+    "price": "6048798",
+    "length": "167",
+    "width": "50",
+    "crew": "468",
+    "power": "78.0",
+    "storage": "超光素9920，炮弹59512，硫磺3600",
+    "forwardSpeed": "88.7",
+    "backSpeed": "27.2",
+    "equipment": "4x大型推进器，10x小型护盾发生器，18x超大推进器，10x双联装点防御炮塔，4x中型加农炮弹药制造厂，4x超级棱镜（lv3），8x离子光束发射器，2x大型护盾发生器，2x四联431mm主炮，4x大型激光炮塔，4xMRT喷口，18xMRT拓展器，1x超空间驱动信标，6x双联甲板炮，2x顶级激光炮塔，2x传感器阵列",
+    "images": [
+      "assets/ships/ship-07-1.jpg",
+      "assets/ships/ship-07-2.jpg"
+    ],
+    "id": "ship-07"
+  },
+  {
+    "name": "CB行列式",
+    "type": "巡洋舰",
+    "manufacturer": "CB",
+    "description": "",
+    "price": "3169450",
+    "length": "94",
+    "width": "66",
+    "crew": "366",
+    "power": "82.5",
+    "storage": "超光素7320",
+    "forwardSpeed": "117.7",
+    "backSpeed": "42.2",
+    "equipment": "8x大型CIWS炮塔，6x双联激光炮塔，26x大型推进器，26x电池弹夹，2x激光链炮，16x离子光束发射器，4x大型护盾发生器，9x超级棱镜（lv1），20xMRT拓展器，4x双联装点防御炮塔，2xMRT喷口，1x全船工程坞",
+    "images": [
+      "assets/ships/ship-08-1.jpg",
+      "assets/ships/ship-08-2.jpg"
+    ],
+    "id": "ship-08"
+  },
+  {
+    "name": "CB得梅因",
+    "type": "驱逐舰（重火力）",
+    "manufacturer": "CB",
+    "description": "",
+    "price": "2666506",
+    "length": "76",
+    "width": "24",
+    "crew": "120",
+    "power": "19.6",
+    "storage": "超光素4880，炮弹21654",
+    "forwardSpeed": "83.9",
+    "backSpeed": "45.9",
+    "equipment": "4x超大推进器，12x重型点防御炮塔，2x大型护盾发生器，16x大型推进器，18x小型推进器，1x全船工程坞，3x203mm主炮（可超频）",
+    "images": [
+      "assets/ships/ship-09-1.jpg",
+      "assets/ships/ship-09-2.jpg"
+    ],
+    "id": "ship-09"
+  },
+  {
+    "name": "CB 货A",
+    "type": "小型货船",
+    "manufacturer": "CB",
+    "description": "",
+    "price": "365200",
+    "length": "41",
+    "width": "31",
+    "crew": "60",
+    "power": "7.5",
+    "storage": "128单位储存",
+    "forwardSpeed": "69.8",
+    "backSpeed": "69.8",
+    "equipment": "14x标准推进器，12x大型推进器，2x双联激光炮塔，2x激光炮塔",
+    "images": [
+      "assets/ships/ship-10-1.jpg",
+      "assets/ships/ship-10-2.jpg"
+    ],
+    "id": "ship-10"
+  },
+  {
+    "name": "CB 优先",
+    "type": "巡洋舰（侧舷爆发/低机动）",
+    "manufacturer": "CB",
+    "description": "",
+    "price": "3395344",
+    "length": "112",
+    "width": "58",
+    "crew": "558",
+    "power": "64.5",
+    "storage": "超光素12960，炮弹13136",
+    "forwardSpeed": "20.2",
+    "backSpeed": "10.0",
+    "equipment": "10x双联激光炮塔，16x大型粒子炮发射器（2x炮管拓展），20x大型推进器，12x超大推进器，20x大型CIWS炮塔，1x顶级激光炮塔",
+    "images": [
+      "assets/ships/ship-11-1.jpg",
+      "assets/ships/ship-11-2.jpg"
+    ],
+    "id": "ship-11"
+  },
+  {
+    "name": "CB 中断",
+    "type": "驱逐舰",
+    "manufacturer": "CB",
+    "description": "",
+    "price": "912700",
+    "length": "51",
+    "width": "36",
+    "crew": "120",
+    "power": "21.0",
+    "storage": "超光素2480",
+    "forwardSpeed": "41.5（加力60）",
+    "backSpeed": "19.1",
+    "equipment": "2x加速推进器，10x小型护盾发生器，2x中型激光炮塔，2x小型光束点防御，3x大型推进器，4x双联激光炮塔，10x大型CIWS炮塔，4x双重重型能量机枪，6x突击加农炮，10x小型CIWS炮塔，2x超大推进器，8x标准推进器，8x重型能量机枪",
+    "images": [
+      "assets/ships/ship-12-1.jpg",
+      "assets/ships/ship-12-2.jpg"
+    ],
+    "id": "ship-12"
+  },
+  {
+    "name": "CB死锁",
+    "type": "新手船",
+    "manufacturer": "CB",
+    "description": "",
+    "price": "148200",
+    "length": "15",
+    "width": "16",
+    "crew": "22",
+    "power": "4.5",
+    "storage": "无（无法超空间跳跃）",
+    "forwardSpeed": "82.9",
+    "backSpeed": "11.8",
+    "equipment": "4x点防御系统，2x双向小型推进器，2x三向小型推进器，6x速射激光炮，2x激光炮塔，2x标准推进器，1x大型推进器",
+    "images": [
+      "assets/ships/ship-13-1.jpg",
+      "assets/ships/ship-13-2.jpg"
+    ],
+    "id": "ship-13"
+  },
+  {
+    "name": "ZSI 起源",
+    "type": "新手船",
+    "manufacturer": "ZSI",
+    "description": "",
+    "price": "67300",
+    "length": "13",
+    "width": "8",
+    "crew": "8",
+    "power": "1.5",
+    "storage": "无（无法超空间跳跃）",
+    "forwardSpeed": "103.0",
+    "backSpeed": "25.0",
+    "equipment": "6x标准推进器，8x小型推进器，2x速射激光炮",
+    "images": [
+      "assets/ships/ship-14-1.jpg",
+      "assets/ships/ship-14-2.jpg"
+    ],
+    "id": "ship-14"
+  },
+  {
+    "name": "ZSI 猎户座",
+    "type": "轻型驱逐舰",
+    "manufacturer": "ZSI",
+    "description": "",
+    "price": "1425900",
+    "length": "63",
+    "width": "29",
+    "crew": "216",
+    "power": "22.5",
+    "storage": "超光素5480",
+    "forwardSpeed": "58.5 （加力84.3）",
+    "backSpeed": "30.8",
+    "equipment": "3x超大推进器，6x加力推进器，8x标准推进器，16x小型护盾发生器，18x大型推进器，18x大型CIWS炮塔，12x离子光束发射器，8x离子光束棱镜，8x双联激光炮塔",
+    "images": [
+      "assets/ships/ship-15-1.jpg",
+      "assets/ships/ship-15-2.jpg"
+    ],
+    "id": "ship-15"
+  },
+  {
+    "name": "ZSI 传承",
+    "type": "战斗机",
+    "manufacturer": "ZSI",
+    "description": "",
+    "price": "170100",
+    "length": "15",
+    "width": "18",
+    "crew": "36",
+    "power": "4.6",
+    "storage": "无",
+    "forwardSpeed": "88.9",
+    "backSpeed": "32.1",
+    "equipment": "4x小型推进器，6x双向推进器，2x大型CIWS炮塔，4x粒子光束发射器，6x标准推进器，4x小型CIWS炮塔",
+    "images": [
+      "assets/ships/ship-16-1.jpg",
+      "assets/ships/ship-16-2.jpg"
+    ],
+    "id": "ship-16"
+  },
+  {
+    "name": "ZSI 极光",
+    "type": "护卫舰（轻装甲）",
+    "manufacturer": "ZSI",
+    "description": "",
+    "price": "601000",
+    "length": "47",
+    "width": "21",
+    "crew": "108",
+    "power": "15.0",
+    "storage": "无",
+    "forwardSpeed": "75.9",
+    "backSpeed": "19.4",
+    "equipment": "4x重型激光炮，12x电池弹匣，2xCIWS炮塔，2x超大推进器，4x大型推进器，8x小型护盾发生器，18x标准推进器，10x点防系统，3x双联激光炮塔，2x能量链炮",
+    "images": [
+      "assets/ships/ship-17-1.jpg",
+      "assets/ships/ship-17-2.jpg"
+    ],
+    "id": "ship-17"
+  },
+  {
+    "name": "ZSI 英仙座",
+    "type": "护卫舰（重型炮艇）",
+    "manufacturer": "ZSI",
+    "description": "",
+    "price": "708096",
+    "length": "45",
+    "width": "36",
+    "crew": "108",
+    "power": "6.0",
+    "storage": "超光素3240，炮弹8024",
+    "forwardSpeed": "85.2  （加力98.8）",
+    "backSpeed": "13.7",
+    "equipment": "8x大型CIWS炮塔，2x小型推进器，8x电池弹夹，2x双联激光炮塔，2x激光炮塔，1x双联381mm主炮，16x标准推进器，2x双联装点防御炮塔，2x离子链炮，2x引擎室，2x超大推进器，4x加力推进器",
+    "images": [
+      "assets/ships/ship-18-1.jpg",
+      "assets/ships/ship-18-2.jpg"
+    ],
+    "id": "ship-18"
+  },
+  {
+    "name": "ZSI 天狼星",
+    "type": "巡洋舰（低输出）",
+    "manufacturer": "ZSI",
+    "description": "",
+    "price": "3587550",
+    "length": "100",
+    "width": "56",
+    "crew": "388",
+    "power": "84.2",
+    "storage": "超光素17760",
+    "forwardSpeed": "94.6",
+    "backSpeed": "14.4",
+    "equipment": "6x大型CIWS炮塔，14x标准推进器，12x离子光束发射器，16x大型光束点防御，16x超级棱镜（lv3），14x小型护盾发生器，6x顶级激光炮塔，8x大型推进器，8x双联激光炮塔，4xMRT喷口模块，1x全船工程坞，1x核心护盾",
+    "images": [
+      "assets/ships/ship-19-1.jpg",
+      "assets/ships/ship-19-2.jpg"
+    ],
+    "id": "ship-19"
+  }
+];
+
+    function createStars() {
+      const stars = document.getElementById("stars");
+      for (let i = 0; i < 42; i++) {
+        const star = document.createElement("span");
+        star.className = "star";
+        star.style.left = ((i * 37) % 100) + "%";
+        star.style.top = ((i * 53) % 100) + "%";
+        star.style.width = (1 + (i % 3)) + "px";
+        star.style.height = (1 + (i % 3)) + "px";
+        star.style.animationDelay = ((i % 7) * 0.35) + "s";
+        stars.appendChild(star);
+      }
+    }
+
+    function formatPrice(value) {
+      const number = Number(String(value || "0").replace(/[^0-9.]/g, ""));
+      if (!Number.isFinite(number)) return value || "—";
+      return new Intl.NumberFormat("zh-CN").format(number);
+    }
+
+    function normalize(text) {
+      return String(text || "").toLowerCase().replace(/\s+/g, "");
+    }
+
+    function getShipText(ship) {
+      return [
+        ship.name, ship.type, ship.manufacturer, ship.price, ship.length, ship.width,
+        ship.crew, ship.power, ship.storage, ship.forwardSpeed, ship.backSpeed,
+        ship.equipment, ship.description
+      ].join(" ");
+    }
+
+    function populateFilters() {
+      const manufacturers = [...new Set(SHIPS.map(ship => ship.manufacturer).filter(Boolean))];
+      const types = [...new Set(SHIPS.map(ship => ship.type).filter(Boolean))];
+
+      const manufacturerFilter = document.getElementById("manufacturerFilter");
+      manufacturerFilter.innerHTML += manufacturers.map(value => `<option value="${value}">${value}</option>`).join("");
+
+      const typeFilter = document.getElementById("typeFilter");
+      typeFilter.innerHTML += types.map(value => `<option value="${value}">${value}</option>`).join("");
+    }
+
+    function updateStats(list) {
+      const maxPrice = Math.max(0, ...list.map(ship => Number(String(ship.price || "0").replace(/[^0-9.]/g, ""))));
+      document.getElementById("statCount").textContent = list.length;
+      document.getElementById("statZsi").textContent = list.filter(ship => ship.manufacturer === "ZSI").length;
+      document.getElementById("statCb").textContent = list.filter(ship => ship.manufacturer === "CB").length;
+      document.getElementById("statMaxPrice").textContent = formatPrice(maxPrice);
+    }
+
+    function renderShips() {
+      const query = normalize(document.getElementById("searchInput").value);
+      const manufacturer = document.getElementById("manufacturerFilter").value;
+      const type = document.getElementById("typeFilter").value;
+
+      const filtered = SHIPS.filter(ship => {
+        const matchQuery = !query || normalize(getShipText(ship)).includes(query);
+        const matchManufacturer = manufacturer === "all" || ship.manufacturer === manufacturer;
+        const matchType = type === "all" || ship.type === type;
+        return matchQuery && matchManufacturer && matchType;
+      });
+
+      updateStats(filtered);
+
+      const grid = document.getElementById("shipGrid");
+      if (!filtered.length) {
+        grid.innerHTML = `<div class="empty">未找到匹配舰船。请尝试更换关键词、厂商或舰种筛选。</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(ship => `
+        <article class="card">
+          <div class="cardImage">
+            <span class="badge">${ship.manufacturer || "ZSI"} / ${ship.type || "UNKNOWN"}</span>
+            <img src="${ship.images?.[0] || ""}" alt="${ship.name}" loading="lazy" />
+          </div>
+          <div class="cardBody">
+            <h3>${ship.name}</h3>
+            <div class="type">${ship.type || "未分类"}</div>
+            <div class="price">¢ ${formatPrice(ship.price)}</div>
+            <div class="specs">
+              <div class="spec"><span>Length</span><strong>${ship.length || "—"}</strong></div>
+              <div class="spec"><span>Crew</span><strong>${ship.crew || "—"}</strong></div>
+              <div class="spec"><span>Power</span><strong>${ship.power || "—"}</strong></div>
+            </div>
+            <p class="desc">${ship.description || ship.equipment || "暂无简介，详情请查看装备清单。"}</p>
+            <div class="cardActions">
+              <button class="detailBtn" onclick="openShip('${ship.id}')">查看详情</button>
+              <button class="buyBtn" onclick="openShip('${ship.id}')">购买申请</button>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function detailItem(label, value, extraClass = "") {
+      return `
+        <div class="detailItem ${extraClass}">
+          <span>${label}</span>
+          <strong>${value || "—"}</strong>
+        </div>
+      `;
+    }
+
+    function openShip(id) {
+      const ship = SHIPS.find(item => item.id === id);
+      if (!ship) return;
+
+      document.getElementById("modalType").textContent = `${ship.manufacturer || ""} / ${ship.type || ""}`;
+      document.getElementById("modalName").textContent = ship.name;
+
+      const gallery = document.getElementById("modalGallery");
+      gallery.innerHTML = (ship.images || []).map(src => `<img src="${src}" alt="${ship.name}" />`).join("");
+
+      const details = document.getElementById("modalDetails");
+      details.innerHTML = [
+        detailItem("售价", "¢ " + formatPrice(ship.price)),
+        detailItem("舰种", ship.type),
+        detailItem("长度", ship.length),
+        detailItem("宽度", ship.width),
+        detailItem("船员数量", ship.crew),
+        detailItem("电力", ship.power),
+        detailItem("储存", ship.storage),
+        detailItem("前进极速", ship.forwardSpeed || ship.speed),
+        detailItem("后退极速", ship.backSpeed),
+        detailItem("装备详情", ship.equipment, "equipment")
+      ].join("");
+
+      document.getElementById("modalDescription").textContent = ship.description || "暂无额外舰船背景简介。";
+      document.getElementById("shipModal").classList.add("open");
+    }
+
+    function closeModal() {
+      document.getElementById("shipModal").classList.remove("open");
+    }
+
+    createStars();
+    populateFilters();
+    renderShips();
+
+    document.getElementById("searchInput").addEventListener("input", renderShips);
+    document.getElementById("manufacturerFilter").addEventListener("change", renderShips);
+    document.getElementById("typeFilter").addEventListener("change", renderShips);
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    document.getElementById("shipModal").addEventListener("click", function(event) {
+      if (event.target === this) closeModal();
+    });
+    window.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") closeModal();
+    });
+  </script>
+</body>
+</html>
